@@ -1,0 +1,2 @@
+-keep class com.spiritdev.proxyvault.model.** { *; }
+-dontwarn okhttp3.**
