@@ -1,180 +1,123 @@
 package com.spiritdev.proxyvault.ui
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.animation.DecelerateInterpolator
+import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.viewModels
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.spiritdev.proxyvault.R
+import com.spiritdev.proxyvault.data.ProfileStore
 import com.spiritdev.proxyvault.databinding.ActivityMainBinding
-import com.spiritdev.proxyvault.model.ProxyItem
-import kotlinx.coroutines.flow.collectLatest
+import com.spiritdev.proxyvault.model.ConnectionMode
+import com.spiritdev.proxyvault.model.TunnelProfile
+import com.spiritdev.proxyvault.tunnel.TunnelService
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: MainViewModel by viewModels()
-    private lateinit var adapter: ProxyAdapter
-
-    private var fullList: List<ProxyItem> = emptyList()
-    private var activeFilter: Filter = Filter.ALL
-    private var searchQuery: String = ""
-
-    private enum class Filter { ALL, HTTP, SOCKS, FAST }
+    private lateinit var store: ProfileStore
+    private var profiles: List<TunnelProfile> = emptyList()
+    private var selected: TunnelProfile? = null
+    private val notifPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
-
-        adapter = ProxyAdapter(
-            onCopy = { copyToClipboard(it); pulse(binding.tvStatus) },
-            onTest = { viewModel.testSingle(it) }
-        )
-        binding.recyclerProxies.layoutManager = LinearLayoutManager(this)
-        binding.recyclerProxies.adapter = adapter
-
-        binding.swipeRefresh.setColorSchemeColors(ContextCompat.getColor(this, R.color.accent_green))
-        binding.swipeRefresh.setProgressBackgroundColorSchemeColor(ContextCompat.getColor(this, R.color.card_bg))
-        binding.swipeRefresh.setOnRefreshListener { viewModel.refresh() }
-
-        binding.btnRefresh.setOnClickListener { animateClick(it); viewModel.refresh() }
-
-        binding.btnExport.setOnClickListener {
-            animateClick(it)
-            val (ok, payload) = viewModel.buildExportText()
-            if (!ok && payload.startsWith("No working")) { toast(payload); return@setOnClickListener }
-            if (!ok && payload.startsWith("Free limit")) {
-                val list = viewModel.workingProxies.value.take(50)
-                copyToClipboardRaw(list.joinToString("\n") { p -> p.address })
-                toast(payload)
-                return@setOnClickListener
-            }
-            copyToClipboardRaw(payload)
-            toast("Exported ${viewModel.workingProxies.value.size} proxies")
+        store = ProfileStore(this)
+        if (Build.VERSION.SDK_INT >= 33) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+                notifPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
-
-        binding.btnRedeem.setOnClickListener { openRedeem() }
-
-        binding.etSearch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                searchQuery = s?.toString()?.trim()?.lowercase() ?: ""
-                applyFilters()
-            }
-        })
-
-        binding.chipAll.setOnClickListener { activeFilter = Filter.ALL; applyFilters() }
-        binding.chipHttp.setOnClickListener { activeFilter = Filter.HTTP; applyFilters() }
-        binding.chipSocks.setOnClickListener { activeFilter = Filter.SOCKS; applyFilters() }
-        binding.chipFast.setOnClickListener { activeFilter = Filter.FAST; applyFilters() }
-
-        observeState()
-        viewModel.refresh()
+        setupUi(); refreshProfiles(); startStatusPoll()
     }
 
-    private fun applyFilters() {
-        var list = fullList
-        list = when (activeFilter) {
-            Filter.ALL -> list
-            Filter.HTTP -> list.filter { it.protocol.equals("http", true) || it.protocol.equals("https", true) }
-            Filter.SOCKS -> list.filter { it.protocol.contains("socks", ignoreCase = true) }
-            Filter.FAST -> list.filter { it.speedMs in 0 until 300 }
-        }
-        if (searchQuery.isNotBlank()) {
-            list = list.filter {
-                it.address.contains(searchQuery, true) ||
-                    it.source.contains(searchQuery, true) ||
-                    it.countryCode.contains(searchQuery, true) ||
-                    it.protocol.contains(searchQuery, true)
+    private fun setupUi() {
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_profiles -> { startActivity(Intent(this, ProfileActivity::class.java)); true }
+                R.id.action_settings -> { startActivity(Intent(this, SettingsActivity::class.java)); true }
+                R.id.action_check_ip -> { checkIp(); true }
+                else -> false
             }
         }
-        adapter.submit(list)
-        binding.tvCount.text = "${list.size} working"
-        binding.emptyState.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
-        binding.recyclerProxies.visibility = if (list.isEmpty()) View.GONE else View.VISIBLE
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_redeem -> { openRedeem(); true }
-            else -> super.onOptionsItemSelected(item)
+        binding.btnConnect.setOnClickListener { toggleConnect() }
+        binding.btnRefresh.setOnClickListener { refreshProfiles() }
+        binding.spinnerProfiles.setOnItemClickListener { _, _, pos, _ ->
+            selected = profiles.getOrNull(pos); bindSelected()
         }
     }
 
-    private fun openRedeem() {
-        RedeemDialog {
-            viewModel.refreshTierLabel()
-            toast("Tier updated")
-            pulse(binding.tvTier)
-        }.show(supportFragmentManager, "redeem")
+    private fun refreshProfiles() {
+        profiles = store.list()
+        val names = profiles.map { "${it.name}  [${it.mode.name}]" }
+        binding.spinnerProfiles.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, names))
+        if (profiles.isNotEmpty() && selected == null) {
+            selected = profiles[0]; binding.spinnerProfiles.setText(names[0], false); bindSelected()
+        }
+        if (profiles.isEmpty()) { binding.tvStatus.text = "No profiles. Create one in Profiles."; selected = null }
     }
 
-    private fun observeState() {
+    private fun bindSelected() {
+        val p = selected ?: return
+        binding.tvMode.text = p.mode.name.replace('_', ' ')
+        binding.tvHost.text = if (p.host.isBlank()) "—" else "${p.host}:${p.port}"
+        binding.tvLocalPort.text = "Local :${p.localPort}"
+        binding.tvNotes.text = p.notes.ifBlank { "No notes" }
+    }
+
+    private fun toggleConnect() {
+        if (TunnelService.isRunning) {
+            startService(Intent(this, TunnelService::class.java).setAction(TunnelService.ACTION_STOP))
+            binding.btnConnect.text = "Connect"; binding.tvLiveStatus.text = "Stopped"; return
+        }
+        val p = selected
+        if (p == null) { Toast.makeText(this, "Select a profile first", Toast.LENGTH_SHORT).show(); return }
+        if (p.host.isBlank() && p.mode != ConnectionMode.SLOWDNS) {
+            Toast.makeText(this, "Profile needs a host", Toast.LENGTH_SHORT).show(); return
+        }
+        val i = Intent(this, TunnelService::class.java).apply {
+            action = TunnelService.ACTION_START
+            putExtra(TunnelService.EXTRA_PROFILE_JSON, p.toJson().toString())
+        }
+        ContextCompat.startForegroundService(this, i)
+        binding.btnConnect.text = "Disconnect"; binding.tvLiveStatus.text = "Starting…"
+    }
+
+    private fun startStatusPoll() {
         lifecycleScope.launch {
-            viewModel.workingProxies.collectLatest { list ->
-                fullList = list
-                applyFilters()
-                binding.tvLastRefresh.text = "Last: ${viewModel.lastRefreshLabel}"
+            while (isActive) {
+                binding.tvLiveStatus.text = TunnelService.statusText
+                binding.btnConnect.text = if (TunnelService.isRunning) "Disconnect" else "Connect"
+                delay(1500)
             }
         }
+    }
+
+    private fun checkIp() {
+        binding.tvLiveStatus.text = "Checking exit IP…"
         lifecycleScope.launch {
-            viewModel.isLoading.collectLatest { loading ->
-                binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
-                binding.btnRefresh.isEnabled = !loading
-                binding.swipeRefresh.isRefreshing = loading
+            try {
+                val client = OkHttpClient.Builder().connectTimeout(8, TimeUnit.SECONDS).readTimeout(8, TimeUnit.SECONDS).build()
+                val body = client.newCall(Request.Builder().url("https://api.ipify.org").build()).execute().body?.string()?.trim() ?: "?"
+                binding.tvLiveStatus.text = "Exit IP: $body"
+                Toast.makeText(this@MainActivity, "Exit IP: $body", Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+                binding.tvLiveStatus.text = "IP check failed: ${e.message}"
             }
         }
-        lifecycleScope.launch {
-            viewModel.statusMessage.collectLatest { msg ->
-                if (msg.isNotBlank()) binding.tvStatus.text = msg
-            }
-        }
-        lifecycleScope.launch {
-            viewModel.tierLabel.collectLatest { tier -> binding.tvTier.text = tier }
-        }
     }
 
-    private fun copyToClipboard(proxy: ProxyItem) {
-        copyToClipboardRaw(proxy.address)
-        toast("Copied ${proxy.address}")
-    }
-
-    private fun copyToClipboardRaw(text: String) {
-        val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        cm.setPrimaryClip(ClipData.newPlainText("proxy", text))
-    }
-
-    private fun toast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-
-    private fun animateClick(v: View) {
-        v.animate().scaleX(0.94f).scaleY(0.94f).setDuration(80).withEndAction {
-            v.animate().scaleX(1f).scaleY(1f).setDuration(120).setInterpolator(DecelerateInterpolator()).start()
-        }.start()
-    }
-
-    private fun pulse(v: View) {
-        v.animate().scaleX(1.08f).scaleY(1.08f).setDuration(100).withEndAction {
-            v.animate().scaleX(1f).scaleY(1f).setDuration(150).start()
-        }.start()
-    }
+    override fun onResume() { super.onResume(); refreshProfiles() }
 }
