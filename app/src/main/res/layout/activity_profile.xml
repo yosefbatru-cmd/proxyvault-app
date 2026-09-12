@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="@color/pv_bg">
+    <com.google.android.material.appbar.MaterialToolbar android:id="@+id/toolbar" android:layout_width="match_parent" android:layout_height="?attr/actionBarSize" android:background="@color/pv_surface" android:title="Profiles" app:titleTextColor="@color/pv_accent" app:navigationIcon="?attr/homeAsUpIndicator" />
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:padding="16dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Name" app:boxBackgroundMode="outline">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etName" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/pv_text" android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mode" android:textColor="@color/pv_muted" android:layout_marginTop="12dp" />
+            <Spinner android:id="@+id/spinnerMode" android:layout_width="match_parent" android:layout_height="48dp" android:background="@color/pv_card" />
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:hint="Host" app:boxBackgroundMode="outline">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etHost" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/pv_text" android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:hint="Port" app:boxBackgroundMode="outline">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etPort" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/pv_text" android:inputType="number" android:text="22" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:hint="Username" app:boxBackgroundMode="outline">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etUser" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/pv_text" android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:hint="Password" app:boxBackgroundMode="outline">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etPass" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/pv_text" android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:hint="Private key (PEM)" app:boxBackgroundMode="outline">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etKey" android:layout_width="match_parent" android:layout_height="wrap_content" android:minLines="3" android:textColor="@color/pv_text" android:inputType="textMultiLine" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:hint="Payload" app:boxBackgroundMode="outline">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etPayload" android:layout_width="match_parent" android:layout_height="wrap_content" android:minLines="2" android:textColor="@color/pv_text" android:inputType="textMultiLine" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:hint="SNI" app:boxBackgroundMode="outline">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etSni" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/pv_text" android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:hint="Local SOCKS port" app:boxBackgroundMode="outline">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLocalPort" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/pv_text" android:inputType="number" android:text="1080" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:hint="DNS resolver" app:boxBackgroundMode="outline">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etDns" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/pv_text" android:inputType="text" android:text="1.1.1.1" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:hint="SlowDNS nameserver" app:boxBackgroundMode="outline">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etSlowNs" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/pv_text" android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:hint="Notes" app:boxBackgroundMode="outline">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etNotes" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/pv_text" android:inputType="textMultiLine" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.checkbox.MaterialCheckBox android:id="@+id/cbCompression" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Compression" android:textColor="@color/pv_text" />
+            <com.google.android.material.checkbox.MaterialCheckBox android:id="@+id/cbUdp" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="UDP forwarding" android:textColor="@color/pv_text" />
+            <com.google.android.material.checkbox.MaterialCheckBox android:id="@+id/cbKeepAlive" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Keep-alive / HTTP ping" android:checked="true" android:textColor="@color/pv_text" />
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:padding="12dp" android:background="@color/pv_surface">
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnNew" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="New" android:textAllCaps="false" style="@style/Widget.MaterialComponents.Button.OutlinedButton" app:strokeColor="@color/pv_accent" android:textColor="@color/pv_accent" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnLoad" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="Load" android:textAllCaps="false" style="@style/Widget.MaterialComponents.Button.OutlinedButton" app:strokeColor="@color/pv_accent" android:textColor="@color/pv_accent" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnDelete" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="Delete" android:textAllCaps="false" style="@style/Widget.MaterialComponents.Button.OutlinedButton" app:strokeColor="@color/pv_danger" android:textColor="@color/pv_danger" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnSave" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="Save" android:textAllCaps="false" app:backgroundTint="@color/pv_accent" android:textColor="@color/pv_bg" />
+    </LinearLayout>
+</LinearLayout>
