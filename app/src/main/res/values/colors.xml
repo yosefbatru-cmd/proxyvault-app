@@ -9,4 +9,17 @@
     <color name="pv_muted">#8A9AAB</color>
     <color name="pv_danger">#FF5C5C</color>
     <color name="pv_warning">#F0A500</color>
+
+    <!-- Legacy aliases (old proxy-finder layouts still in tree) -->
+    <color name="accent_green">@color/pv_accent</color>
+    <color name="card_bg">@color/pv_card</color>
+    <color name="text_primary">@color/pv_text</color>
+    <color name="text_secondary">@color/pv_muted</color>
+    <color name="speed_fast">#3DDC97</color>
+    <color name="speed_medium">#F0A500</color>
+    <color name="speed_slow">#FF5C5C</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="bg_dark">@color/pv_bg</color>
+    <color name="surface">@color/pv_surface</color>
 </resources>
