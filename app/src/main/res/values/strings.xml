@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ProxyVault</string>
-    <string name="tagline">50+ sources. One tap. Live proxies.</string>
-    <string name="refresh_now">REFRESH</string>
-    <string name="export_all">Export</string>
-    <string name="working_count">0 working</string>
-    <string name="last_refresh">Last: Never</string>
-    <string name="status_ready">Ready · pull down to refresh · tap card to copy</string>
+    <string name="settings">Settings</string>
+    <string name="profiles">Profiles</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="check_ip">Check IP</string>
+    <string name="export_mr">Export .MR</string>
+    <string name="import_mr">Import .MR</string>
 </resources>
