@@ -8,4 +8,13 @@
     <string name="check_ip">Check IP</string>
     <string name="export_mr">Export .MR</string>
     <string name="import_mr">Import .MR</string>
+    <string name="home">Home</string>
+    <string name="logs">Logs</string>
+    <string name="tools">Tools</string>
+    <string name="status_ready">Ready to connect</string>
+    <string name="status_unknown">Status Unknown</string>
+    <string name="server">SERVER</string>
+    <string name="connection_mode">CONNECTION MODE</string>
+    <string name="advanced_options">Advanced options</string>
+    <string name="advanced_hint">Payload, proxy, SNI and extras</string>
 </resources>

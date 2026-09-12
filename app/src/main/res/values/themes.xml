@@ -2,14 +2,38 @@
 <resources>
     <style name="Theme.ProxyVault" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/pv_accent</item>
-        <item name="colorPrimaryVariant">@color/pv_accent_dim</item>
-        <item name="colorSecondary">@color/pv_accent</item>
-        <item name="android:statusBarColor">@color/pv_bg</item>
+        <item name="colorPrimaryVariant">@color/pv_green_bar</item>
+        <item name="colorSecondary">@color/pv_accent_bright</item>
+        <item name="android:statusBarColor">@color/pv_green_bar</item>
         <item name="android:navigationBarColor">@color/pv_bg</item>
         <item name="android:windowBackground">@color/pv_bg</item>
-        <item name="colorOnPrimary">@color/pv_bg</item>
+        <item name="colorOnPrimary">@color/white</item>
         <item name="colorSurface">@color/pv_surface</item>
         <item name="android:textColorPrimary">@color/pv_text</item>
         <item name="android:textColorSecondary">@color/pv_muted</item>
+        <item name="bottomNavigationStyle">@style/Widget.ProxyVault.BottomNav</item>
+    </style>
+
+    <style name="Widget.ProxyVault.BottomNav" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemIconTint">@color/pv_accent</item>
+        <item name="itemTextColor">@color/pv_text</item>
+        <item name="backgroundTint">@color/pv_surface</item>
+    </style>
+
+    <style name="Widget.ProxyVault.ConnectButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">17sp</item>
+        <item name="cornerRadius">28dp</item>
+        <item name="backgroundTint">@color/pv_accent_bright</item>
+        <item name="android:textColor">@color/pv_bg</item>
+    </style>
+
+    <style name="Widget.ProxyVault.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/pv_card</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/pv_stroke</item>
     </style>
 </resources>

@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="pv_bg">#0B0F14</color>
-    <color name="pv_surface">#121820</color>
-    <color name="pv_card">#1A222D</color>
-    <color name="pv_accent">#3DDC97</color>
-    <color name="pv_accent_dim">#2A9B6A</color>
-    <color name="pv_text">#E8EEF4</color>
-    <color name="pv_muted">#8A9AAB</color>
+    <color name="pv_bg">#0D0F12</color>
+    <color name="pv_surface">#151A20</color>
+    <color name="pv_card">#1C232B</color>
+    <color name="pv_card_elevated">#222B35</color>
+    <color name="pv_accent">#2ECC71</color>
+    <color name="pv_accent_bright">#3DDC84</color>
+    <color name="pv_accent_dim">#1B8A4A</color>
+    <color name="pv_green_bar">#1FA855</color>
+    <color name="pv_text">#F2F5F8</color>
+    <color name="pv_muted">#8B97A5</color>
     <color name="pv_danger">#FF5C5C</color>
     <color name="pv_warning">#F0A500</color>
+    <color name="pv_stroke">#2A333D</color>
+    <color name="pv_dot_idle">#555E68</color>
+    <color name="pv_dot_ok">#2ECC71</color>
+    <color name="pv_dot_err">#FF5C5C</color>
 
-    <!-- Legacy aliases (old proxy-finder layouts still in tree) -->
     <color name="accent_green">@color/pv_accent</color>
     <color name="card_bg">@color/pv_card</color>
     <color name="text_primary">@color/pv_text</color>
     <color name="text_secondary">@color/pv_muted</color>
-    <color name="speed_fast">#3DDC97</color>
+    <color name="speed_fast">#2ECC71</color>
     <color name="speed_medium">#F0A500</color>
     <color name="speed_slow">#FF5C5C</color>
     <color name="black">#000000</color>
