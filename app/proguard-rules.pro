@@ -1,2 +1,2 @@
--keep class com.spiritdev.proxyvault.model.** { *; }
--dontwarn okhttp3.**
+# ProxyVault ProGuard
+-keep class com.spiritdev.proxyvault.** { *; }

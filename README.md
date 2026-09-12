@@ -1,44 +1,64 @@
-# ProxyVault App
+# ProxyVault — Secure Networking Suite
 
-**Real-time proxy finder & validator for Android.**
+**Your Wire. Your Rules. No Compromise.**
 
-50+ sources · Live validation · Code activation (Free / Premium / Pro / Lifetime)
+Lightweight modular tunneling client for Android.
+
+- SSH Direct
+- SlowDNS evasion
+- Encrypted `.MR` cloud config sync
+- Payload / SNI / buffer controls
+- No analytics. No ads. Source-transparent.
 
 ## Download APK
 
-1. Open **Actions** tab
-2. Click the latest green **Build APK** run
-3. Download artifact **ProxyVault-Debug-APK**
-4. Unzip → install the `.apk` on your phone
+1. Open **Actions**
+2. Latest green **Build APK** run
+3. Artifact **ProxyVault-v2-Debug-APK**
+4. Unzip → install
 
-Or trigger manually: **Actions → Build APK → Run workflow**
+Or: **Actions → Build APK → Run workflow**
 
 ## Features
 
-- Multi-source fetch + concurrent validation
-- Search + filter chips (All / HTTP / SOCKS5 / Fast)
-- Pull-to-refresh, tap to copy, test button
-- Premium codes: see `docs/CODES.md`
+| Module | Detail |
+|--------|--------|
+| SSH Direct | Native TCP probe + keep-alive |
+| SlowDNS | DNS-resolver tunnel path |
+| Advanced | Custom payload + SNI |
+| .MR Export/Import | Scrypt N=2^18 + AES-256-GCM + HMAC-SHA256 |
+| Tools | Check IP, day/night theme |
+
+## Profiles
+
+Create tunnels under **Profiles**:
+- Host / port / user / password / private key
+- Local SOCKS port (default 1080)
+- Buffer, compression, UDP forward, keep-alive
+- HTTP ping URL for liveness
+
+## .MR Security
+
+```
+Scrypt (N=262144, r=8, p=1) → 256-bit key
+AES-256-GCM payload
+HMAC-SHA256 over entire file
+Magic string PROXYVAULT_MR_V2
+```
+
+Wrong password or bit-flip → hard reject. No partial load.
 
 ## Build locally
 
 ```bash
 git clone https://github.com/yosefbatru-cmd/proxyvault-app.git
 cd proxyvault-app
-# Android Studio → Open → Run
-# or: gradle assembleDebug
+# Android Studio Open, or:
+gradle assembleDebug
 ```
 
-## Activation codes
+## Version
 
-| Tier | Codes |
-|------|--------|
-| Premium | `premium-mr-unknown` · `mr-premium-unknown` |
-| Pro | `pro-mr-unknown` · `pro-unknown-mr` |
-| Lifetime | `lifetime-mr-unknown09` |
+**2.0.0** — Secure Networking Suite rebuild
 
-In-app: **Enter code / Upgrade**
-
-## License
-
-SPIRIT / proprietary. For legitimate testing & research.
+ProxyVault. Built sharp. Delivered clean.
